@@ -18,14 +18,21 @@ pipeline {
           }  
 
       stage('Docker Build and Push') {
-            steps {
-              withDockerRegistry(credentialsId: 'docker-hub', url: 'https://index.docker.io/v1/') {
-                    sh 'printenv'
-                    sh "docker build -t siddharth67/numeric-app:$GIT_COMMIT ."
-                    sh "docker push siddharth67/numeric-app:$GIT_COMMIT"
- 
-                }           
-           }
-        }   
+         steps {
+           script {
+             try {
+                // Log in to Docker Hub using --password-stdin
+                sh "echo 'Snooping1989!' | docker login --username elvinsa --password-stdin https://index.docker.io/v1/"
+
+                // Build and push the Docker image
+                sh "docker build -t siddharth67/numeric-app:$GIT_COMMIT ."
+                sh "docker push siddharth67/numeric-app:$GIT_COMMIT"
+              } catch (Exception e) {
+                currentBuild.result = 'FAILURE'
+                error("Failed to build and push Docker image: ${e.message}")
+            }
+        }
     }
 }
+}   
+
