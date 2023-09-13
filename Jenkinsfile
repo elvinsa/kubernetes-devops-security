@@ -21,15 +21,15 @@
         steps {
           withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
               sh "printenv"
-              sh "docker build -t develv/numeric-app:$GIT_COMMIT ."
-              sh "docker push develv/numeric-app:$GIT_COMMIT"
+              sh "docker build -t elvinsa/numeric-app:$GIT_COMMIT ."
+              sh "docker push elvinsa/numeric-app:$GIT_COMMIT"
             }
           }
       }
     stage('Kubernets Deployment - DEV') {
         steps {
             withKubeConfig([credentialsId: "kubeconfig"]) {
-              sh "sed -i 's#replace#develv/numeric-app:\$(GIT_COMMIT)#g' k8s_deployment_service.yaml"
+              sh "sed -i 's#replace#elvinsa/numeric-app:\$(GIT_COMMIT)#g' k8s_deployment_service.yaml"
               sh "kubectl apply -f k8s_deployment_service.yaml"                                                                 
               }
           }
