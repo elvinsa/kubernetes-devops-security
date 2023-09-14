@@ -36,20 +36,22 @@ pipeline {
     stage('Docker image build and push') {
       steps {
           withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
-          sh 'printenv'
-          sh 'docker build -t elvinsa/numeric-app:""$GIT_COMMIT"" .'
-          sh 'docker push elvinsa/numeric-app:""$GIT_COMMIT""'
+           sh 'printenv'
+           sh 'docker build -t elvinsa/numeric-app:""$GIT_COMMIT"" .'
+           sh 'docker push elvinsa/numeric-app:""$GIT_COMMIT""'
        }
      }
   }
 
     stage('Kubernetes Deployment - DEV') {
       steps {
-        sh "sed -i 's#replace#elvinsa/numeric-app:${GIT_COMMIT}#g' k8s_deployment_service.yaml"
-        sh "kubectl apply -f k8s_deployment_service.yaml"
-      }
+          withDockerRegistry([credentialsId: 'kubeconfig])' {
+           sh "sed -i 's#replace#elvinsa/numeric-app:${GIT_COMMIT}#g' k8s_deployment_service.yaml"
+           sh "kubectl apply -f k8s_deployment_service.yaml"
+       }
+     }
     }
-   }
+  }
  }
 
 
