@@ -85,6 +85,22 @@
 					  </outputFormats>
 					</configuration>
 				</plugin> 
+				        <!--                   Dependency-Check Plugin                   -->
+				 <plugin>
+              <groupId>org.owasp</groupId>
+              <artifactId>dependency-check-maven</artifactId>
+              <version>8.4.0</version>
+              <configuration>
+                  <failBuildOnCVSS>9</failBuildOnCVSS>
+              </configuration>
+              <executions>
+                  <execution>
+                      <goals>
+                          <goal>check</goal>
+                      </goals>
+                  </execution>
+              </executions>
+            </plugin>       
 		</plugins>
 	</build>
 
