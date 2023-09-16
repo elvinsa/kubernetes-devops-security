@@ -48,17 +48,18 @@ pipeline {
       }
     }
      
-    stage('Vulnerability Scan - Dependency Check') {
+    stage('Vulnerability Scan - Dependency Check - Trivy') {
       steps {
-        sh "mvn dependency-check:check"
+        parallel(
+          "Dependency Scan": {
+            sh "mvn dependency-check:check"
+          },
+          "Trivy Scan": {
+            sh "bash trivy-docker-image-scan.sh"
+          }
+        )
       }
-        post {
-          always {
-            dependencyCheckPublisher pattern: 'dependecy-check-report.xml'
-        }  
-        
-      }
-  }
+    }
      
     stage('Docker image build and push') {
       steps {
