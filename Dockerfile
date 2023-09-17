@@ -2,7 +2,7 @@ FROM adoptopenjdk/openjdk8
 
 # Set a non-root user
 RUN useradd -u 1111 -m -s /bin/bash k8s-pipeline && \
-    groupadd -g 1111 pipeline && \
+    groupadd -g 118 pipeline && \
     usermod -a -G pipeline k8s-pipeline
 
 # Set the working directory
