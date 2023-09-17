@@ -6,8 +6,8 @@ pipeline {
     containerName = "devsecops-container"
     serviceName = "devsecops-svc"
     imageName = "elvinsa/numeric-app${GIT_COMMIT}"
-    applicationURL "http://devsecop.eastus.cloudapp.azure.com/"
-    applicationURI "/increment/99"
+    applicationURL = "http://devsecop.eastus.cloudapp.azure.com/"
+    applicationURI = "/increment/99"
   }
 
   stages {
@@ -73,16 +73,15 @@ pipeline {
       }
     }
 
-     
     stage('Docker image build and push') {
       steps {
-          withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
-           sh 'printenv'
-           sh 'sudo docker build -t elvinsa/numeric-app:""$GIT_COMMIT"" .'
-           sh 'docker push elvinsa/numeric-app:""$GIT_COMMIT""'
-       }
-     }
-  }
+        withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
+          sh 'printenv'
+          sh 'sudo docker build -t elvinsa/numeric-app:""$GIT_COMMIT"" .'
+          sh 'docker push elvinsa/numeric-app:""$GIT_COMMIT""'
+        }
+      }
+    }
 
     stage('Vulnerability Scan - Kubernetes') {
       steps {
@@ -90,7 +89,7 @@ pipeline {
       }
     }
 
- stage('K8S Deployment - DEV') {
+    stage('K8S Deployment - DEV') {
       steps {
         parallel(
           "Deployment": {
@@ -101,13 +100,14 @@ pipeline {
           "Rollout Status": {
             withKubeConfig([credentialsId: 'kubeconfig']) {
               sh "bash k8s-deployment-rollout-status.sh"
+            }
           }
-        }
-      )
+        )
+      }
     }
   }
- }
 }
+
 
 
 
