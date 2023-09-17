@@ -5,7 +5,9 @@ pipeline {
     deploymentName = "devsecops"
     containerName = "devsecops-container"
     serviceName = "devsecops-svc"
-    imageName = "elvinsa/numeric-app"
+    imageName = "elvinsa/numeric-app${GIT_COMMIT}"
+    applicationURL "http://devsecop.eastus.cloudapp.azure.com/"
+    applicationURI "/increment/99"
   }
 
   stages {
@@ -92,9 +94,12 @@ pipeline {
       steps {
         parallel(
           "Deployment": {
+            withKubeConfig([credentialsId: 'kubeconfig']) {
               sh "bash k8s-deployment.sh"
+            } 
           },
           "Rollout Status": {
+            withKubeConfig([credentialsId: 'kubeconfig']) {
               sh "bash k8s-deployment-rollout-status.sh"
           }
         )
