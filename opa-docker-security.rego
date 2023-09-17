@@ -1,27 +1,30 @@
 package main
 
+# Do Not store secrets in ENV variables
 secrets_env = {
-    "passwd": true,
-    "password": true,
-    "pass": true,
-    "secret": true,
-    "key": true,
-    "access": true,
-    "api_key": true,
-    "apikey": true,
-    "token": true,
-    "tkn": true
+    "passwd",
+    "password",
+    "pass",
+    "secret",
+    "key",
+    "access",
+    "api_key",
+    "apikey",
+    "token",
+    "tkn"
+}
+
+# Helper function to check if value contains a secret
+contains_secret(val) {
+    contains(val, secret)
 }
 
 deny[msg] {
-    input.env[_] == val
-    contains_secret(val)
-    msg = sprintf("Potential secret in ENV key found: %s", [val])
-}
-
-contains_secret(val) {
-    secrets_env[key]
-    split(val, "=")[0] == key
+    input[i].Cmd == "env"
+    val := input[i].Value
+    secret = secrets_env[_]
+    contains_secret(val, secret)
+    msg = sprintf("Line %d: Potential secret in ENV key found: %s", [i, val])
 }
 
 
