@@ -95,7 +95,8 @@ pipeline {
         ) 
       }
     }
-
+ }
+ 
 //    stage('K8S Deployment - DEV') {
 //      steps {
 //        parallel(
