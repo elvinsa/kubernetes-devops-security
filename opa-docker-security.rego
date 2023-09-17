@@ -14,17 +14,16 @@ secrets_env = {
 }
 
 deny[msg] {
-    input[i].Cmd == "env"
-    val := input[i].Value
-    key_val := split(val[0], "=")
-    contains_key_val(key_val)
-    msg = sprintf("Line %d: Potential secret in ENV key found: %s", [i, val])
+    input.env[_] == val
+    contains_secret(val)
+    msg = sprintf("Potential secret in ENV key found: %s", [val])
 }
 
-contains_key_val(key_val) {
-    key_val[0] == k
-    secrets_env[k]
+contains_secret(val) {
+    secrets_env[key]
+    split(val, "=")[0] == key
 }
+
 
 # Only use trusted base images
 deny[msg] {
