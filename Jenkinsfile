@@ -1,5 +1,12 @@
 pipeline {
   agent any
+  
+  environment {
+    deploymentName = "devsecops"
+    containerName = "devsecops-container"
+    serviceName = "devsecops-svc"
+    imageName = "elvinsa/numeric-app"
+  }
 
   stages {
 
