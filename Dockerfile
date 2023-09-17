@@ -1,8 +1,17 @@
 FROM adoptopenjdk/openjdk8
-EXPOSE 8080
+
+# Add a non-root user and group
+RUN addgroup -S pipeline && adduser -S -G pipeline k8s-pipeline
+
+# Set the working directory
+WORKDIR /home/k8s-pipeline
+
+# Copy the JAR file
 ARG JAR_FILE=target/*.jar
-RUN addgroup -g 1000 pipeline && adduser -D -u 1000 -G pipeline k8s-pipeline
-COPY ${JAR_FILE} /home/k8s-pipeline/app.jar
-RUN chown k8s-pipeline:pipeline /home/k8s-pipeline/app.jar
+COPY ${JAR_FILE} app.jar
+
+# Set the user to run the application
 USER k8s-pipeline
-ENTRYPOINT ["java", "-jar", "/home/k8s-pipeline/app.jar"]
+
+# Command to run the application
+ENTRYPOINT ["java", "-jar", "app.jar"]
