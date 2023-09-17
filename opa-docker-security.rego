@@ -1,7 +1,7 @@
 package main
 
 # Do Not store secrets in ENV variables
-secrets_env = {
+secrets_env = [
     "passwd",
     "password",
     "pass",
@@ -12,22 +12,14 @@ secrets_env = {
     "apikey",
     "token",
     "tkn"
-}
+]
 
-# Helper function to check if value contains a secret
-contains_secret(val) {
-    contains(val, secret)
-}
-
-deny[msg] {
+deny[msg] {    
     input[i].Cmd == "env"
     val := input[i].Value
-    secret = secrets_env[_]
-    contains_secret(val)
+    contains(lower(val[_]), secrets_env[_])
     msg = sprintf("Line %d: Potential secret in ENV key found: %s", [i, val])
 }
-
-
 
 # Only use trusted base images
 deny[msg] {
