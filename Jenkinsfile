@@ -48,7 +48,7 @@ pipeline {
           sh "mvn sonar:sonar \
               -Dsonar.projectKey=devsecops-numeric-application \
               -Dsonar.host.url=http://devsecop.eastus.cloudapp.azure.com:9000/"
-      }
+        }
         timeout(time: 2, unit: 'MINUTES') {
           script {
             waitForQualityGate abortPipeline: true
@@ -89,7 +89,7 @@ pipeline {
           "OPA Scan": {
             sh 'docker run --rm -v $(pwd):/project openpolicyagent/conftest test --policy opa-k8s-security.rego k8s_deployment_service.yaml'
           },
-          "KubeSec Scan:" {
+          "KubeSec Scan": {
             sh "bash kubesec-scan.sh"
           } 
         ) 
@@ -97,10 +97,6 @@ pipeline {
     }
   }
 }
-
-
-
-
 
 
 
